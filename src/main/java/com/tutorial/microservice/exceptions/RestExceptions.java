@@ -23,9 +23,14 @@ public class RestExceptions extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, new ApiError("Malformed body"), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFound(final UserNotFoundException ex, final WebRequest request) {
+        return handleExceptionInternal(ex, new ApiError("Resource not found"), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-        return handleExceptionInternal(ex, new ApiError("Invalid argument"), headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, new ApiError(String.format("Malformed body in %s", ex.getBindingResult().getTarget())), headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class})
